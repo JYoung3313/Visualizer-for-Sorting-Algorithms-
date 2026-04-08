@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 extern SortStatus global_status;
 
@@ -109,7 +110,7 @@ SortStatus heapSort(int* arr, int n, void (*draw_callback)()) {
         // call max heapify on the reduced heap
         heapify(arr, i, 0, draw_callback);
     }
-    return (SortStatus){ .swapped = true, .i = n, .j = n, .sort_done = true };
+    return (SortStatus){ .swapped = true, .i = n, .j = n, .sort_done = true, .type = "Sort", .search_done = false };
 }
 
 // Helper function to merge to halves
@@ -215,5 +216,30 @@ SortStatus bucketSort(int* arr, int n, void (*draw_callback)()) {
         }
     }
     global_status.sort_done = true;
+    return global_status;
+}
+
+// helper for search
+// SortStatus linSearchReturn() {
+//     global_status.sort_done = true;
+//     return global_status;
+// }
+
+// testing for search algorithm
+SortStatus linearSearch(int* arr, int n, int target, void (*draw_callback)()) {
+    global_status.type = "Search";
+    bool done = false;
+    for (int i = 0; i < n; i++) {
+        global_status.i = i;
+        if (arr[i] != target) {
+            if (draw_callback) draw_callback();
+        } else {
+            std::cout << arr[i] << std::endl;
+            break;
+        }
+    }
+    if (!done) return global_status;
+    global_status.sort_done = true;
+    global_status.search_done = true;
     return global_status;
 }

@@ -1,10 +1,13 @@
 // Copyright [2026] <Justin J. Young>
 #pragma once
+#include<string>
 
 typedef struct {
     bool swapped;
     int i, j;
     bool sort_done;
+    std::string type;
+    bool search_done;
 } SortStatus;
 
 //swap
@@ -20,3 +23,5 @@ SortStatus heapSort(int* arr, int n, void (*draw_callback)());
 SortStatus mergeSort(int* arr, int n, int left, int right, void (*draw_callback)());
 
 SortStatus bucketSort(int* arr, int n, void (*draw_callback)());
+
+SortStatus linearSearch(int* arr, int n, int target, void (*draw_callback)());

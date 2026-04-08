@@ -11,13 +11,13 @@
 #define HEIGHT 600 * 2
 
 // Defines count of bars
-#define COUNT 500
+#define COUNT 10
 
 // Global for array of number of bars
 int numbers[COUNT];
 
 
-SortStatus global_status = {false, 0, 0, false};
+SortStatus global_status = {false, 0, 0, false, "Sort", false};
 
 
 // Draws shape of choice
@@ -116,9 +116,9 @@ int main() {
     // global_status = linear_sort(numbers, COUNT, update_frame);
     // global_status = bubble_sort(numbers, COUNT, update_frame);
     // global_status = heapSort(numbers, COUNT, update_frame);
-    global_status = mergeSort(numbers, COUNT, 0, COUNT - 1, update_frame);
+    //global_status = mergeSort(numbers, COUNT, 0, COUNT - 1, update_frame);
     // global_status = bucketSort(numbers, COUNT, update_frame);
-
+    global_status = linearSearch(numbers, COUNT, 399, update_frame);
 
     // Window main loop
     while (!WindowShouldClose()) {
@@ -131,7 +131,15 @@ int main() {
         BeginDrawing();
             ClearBackground(BLACK); 
             draw_bars();
-            DrawText("SORT COMPLETE", 10, 10, 20, GREEN);
+            if (global_status.type == "Search") {
+                if (global_status.search_done == true) {
+                    DrawText("Search COMPLETE", 10, 10, 20, GREEN);
+                } else {
+                    DrawText("Target Not Found", 10, 10, 20, GREEN);
+                }
+            } else {
+                DrawText("SORT COMPLETE", 10, 10, 20, GREEN);
+            }
         EndDrawing();
     }
 
