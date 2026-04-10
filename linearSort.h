@@ -5,6 +5,7 @@
 typedef struct {
     bool swapped;
     int i, j;
+    int mid;       // Add this to track the middle
     bool sort_done;
     std::string type;
     bool search_done;
@@ -25,3 +26,5 @@ SortStatus mergeSort(int* arr, int n, int left, int right, void (*draw_callback)
 SortStatus bucketSort(int* arr, int n, void (*draw_callback)());
 
 SortStatus linearSearch(int* arr, int n, int target, void (*draw_callback)());
+
+SortStatus binarySearch(int* arr, int n, int target, void (*draw_callback)());

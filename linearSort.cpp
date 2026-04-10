@@ -110,7 +110,8 @@ SortStatus heapSort(int* arr, int n, void (*draw_callback)()) {
         // call max heapify on the reduced heap
         heapify(arr, i, 0, draw_callback);
     }
-    return (SortStatus){ .swapped = true, .i = n, .j = n, .sort_done = true, .type = "Sort", .search_done = false };
+    global_status.sort_done = true;
+    return global_status;
 }
 
 // Helper function to merge to halves
@@ -118,17 +119,17 @@ static void merge(int* arr, int left, int mid, int right, void (*draw_callback)(
     int n1 = mid - left + 1;
     int n2 = right - mid;
 
-    // creates temp arrays;
-    int L[n1], R[n2];
+    // Use std::vector to be safer with stack memory on large arrays
+    std::vector<int> L(n1), R(n2);
 
     for (int i = 0; i < n1; i++) L[i] = arr[left + i];
-    for (int j = 0; j < n1; j++) R[j] = arr[mid + 1 + j];
+    for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j]; // Fixed: use n2 and j
 
     int i = 0, j = 0, k = left;
 
     while (i < n1 && j < n2) {
         global_status.i = k;
-        global_status.j = left + i;
+        global_status.j = mid + 1 + j; // Highlight what we are comparing against
 
         if (L[i] <= R[j]) {
             arr[k] = L[i];
@@ -137,27 +138,23 @@ static void merge(int* arr, int left, int mid, int right, void (*draw_callback)(
             arr[k] = R[j];
             j++;
         }
-        global_status.swapped = true;
         if (draw_callback) draw_callback();
         k++;
     }
     
-    // Coping remaining elements of L[]
+    // Copy remaining elements
     while (i < n1) {
         arr[k] = L[i];
         global_status.i = k;
         if (draw_callback) draw_callback();
-        i++;
-        k++;
+        i++; k++;
     }
 
-    // Copy remaining elements of R[]
     while (j < n2) {
         arr[k] = R[j];
         global_status.i = k;
         if (draw_callback) draw_callback();
-        j++;
-        k++;
+        j++; k++;
     }
 }
 
@@ -228,18 +225,51 @@ SortStatus bucketSort(int* arr, int n, void (*draw_callback)()) {
 // testing for search algorithm
 SortStatus linearSearch(int* arr, int n, int target, void (*draw_callback)()) {
     global_status.type = "Search";
-    bool done = false;
+    // global_status.search_done = false;
+
     for (int i = 0; i < n; i++) {
         global_status.i = i;
-        if (arr[i] != target) {
-            if (draw_callback) draw_callback();
-        } else {
-            std::cout << arr[i] << std::endl;
-            break;
+        if (draw_callback) draw_callback();
+
+        if (arr[i] == target) {
+            global_status.search_done = true;
+            global_status.sort_done = true;
+            return global_status;
         }
     }
-    if (!done) return global_status;
-    global_status.sort_done = true;
-    global_status.search_done = true;
+    global_status.sort_done = true; // Finished looking, even if not found
+    return global_status;
+}
+
+SortStatus binarySearch(int* arr, int n, int target, void (*draw_callback)()) {
+    global_status.type = "Search";
+    global_status.search_done = false;
+    global_status.sort_done = false;
+    
+    int start = 0;
+    int end = n - 1;
+
+    while (start <= end) {
+        int mid = start + (end - start) / 2;
+        global_status.i = start;
+        global_status.j = end;
+        global_status.mid = mid;
+
+        if (draw_callback) draw_callback();
+
+
+        if (arr[mid] == target) {
+            global_status.i = mid;
+            global_status.search_done = true; // target found at middle index
+            global_status.sort_done = true; // Finished looking, even if not found
+            return global_status;
+            
+        } else if (arr[mid] < target) {
+            start = mid + 1 ;    // searching right half;
+        } else {
+            end = mid - 1;   // searching left half
+        }
+    }
+    global_status.sort_done = true; // Finished looking, even if not found
     return global_status;
 }
