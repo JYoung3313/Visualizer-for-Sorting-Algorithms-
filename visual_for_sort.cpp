@@ -220,7 +220,7 @@ int main() {
             ClearBackground(BLACK);
             if (isTextBoxVisible) {
                 if (!isPickingTarget) {
-                    DrawText("Select algorithm", WIDTH/2 - 200, HEIGHT/2 - 100, 20, GREEN);
+                    DrawText("Select algorithm", WIDTH/2 - 150, HEIGHT/2 - 100, 30, GREEN);
                     //DrawText("Select algorithm", 10, 10, 20, GREEN);
                     // Helper list
                     DrawText("Options: linear_sort, bubble_sort, heapSort, mergeSort, bucketSort, linearSearch, binarySearch", 
