@@ -76,6 +76,12 @@ void draw_bars() {
             drawShapes("bar", i, val, ORANGE);
         } else
         drawShapes("bar", i, val, color);
+
+        if (global_status.search_done == true && target == i) {
+            drawShapes("bar", target, val, GREEN);
+        } else if (global_status.sort_done == true && global_status.search_done == false) {
+            drawShapes("bar", i, val, GREEN);
+        }
     }
 }
 
@@ -142,14 +148,22 @@ void runSelectedSort(int target) {
         global_status = mergeSort(numbers, COUNT, 0, COUNT - 1, update_frame);
     } else if (selection == "bucketSort") {
         global_status = bucketSort(numbers, COUNT, update_frame);
+    } else if (selection == "quickSort") {
+        global_status = quickSort(numbers, 0, COUNT - 1, update_frame);
     } else if (selection == "linearSearch") {
         global_status = linearSearch(numbers, COUNT, target, update_frame);
     } else if (selection == "binarySearch") {
+        global_status.type = "Sort";
         global_status = bucketSort(numbers, COUNT, update_frame);
         
-        global_status.sort_done = false; 
+        global_status.sort_done = false;
         global_status.search_done = false;
+        global_status.type = "Search";
+        SetTargetFPS(1);
         global_status = binarySearch(numbers, COUNT, target, update_frame);
+        if (global_status.sort_done == true) {
+            SetTargetFPS(60);
+        }
     }
 }
 
@@ -220,13 +234,13 @@ int main() {
             ClearBackground(BLACK);
             if (isTextBoxVisible) {
                 if (!isPickingTarget) {
-                    DrawText("Select algorithm", WIDTH/2 - 150, HEIGHT/2 - 100, 30, GREEN);
+                    DrawText("Select algorithm", WIDTH/2 - 200, HEIGHT/2 - 120, 50, GREEN);
                     //DrawText("Select algorithm", 10, 10, 20, GREEN);
                     // Helper list
-                    DrawText("Options: linear_sort, bubble_sort, heapSort, mergeSort, bucketSort, linearSearch, binarySearch", 
-                            WIDTH/2 - 350, HEIGHT/2 + 20, 15, GRAY);
+                    DrawText("Options: linear_sort, bubble_sort, heapSort, mergeSort, bucketSort, quickSort, linearSearch, binarySearch", 
+                        WIDTH/2 - 450, HEIGHT/2 + 20, 20, GRAY);
                 } else {
-                    DrawText("Select Target (0 - max: 499)", WIDTH/2 - 200, HEIGHT/2 - 100, 20, ORANGE);
+                    DrawText("Select Target (0 - 499)", WIDTH/2 - 220, HEIGHT/2 - 120, 40, ORANGE);
                 }
                 // Draws input box
                 DrawRectangle(WIDTH/2 - 200, HEIGHT/2 - 60, 400, 50, DARKGRAY);

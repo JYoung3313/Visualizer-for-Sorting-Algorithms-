@@ -25,6 +25,8 @@ SortStatus mergeSort(int* arr, int n, int left, int right, void (*draw_callback)
 
 SortStatus bucketSort(int* arr, int n, void (*draw_callback)());
 
+SortStatus quickSort(int* arr, int low, int high, void (*draw_callback)());
+
 SortStatus linearSearch(int* arr, int n, int target, void (*draw_callback)());
 
 SortStatus binarySearch(int* arr, int n, int target, void (*draw_callback)());

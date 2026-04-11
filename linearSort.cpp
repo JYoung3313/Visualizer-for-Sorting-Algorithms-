@@ -222,6 +222,57 @@ SortStatus bucketSort(int* arr, int n, void (*draw_callback)()) {
 //     return global_status;
 // }
 
+// partition helper function for quickSort
+static int partition(int* arr, int low, int high, void (*draw_callback)()) {
+    // Choose the rightmost element as the pivot
+    int pivot = arr[high];
+    // index of the smaller element
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {  // Standard quicksort loop goes to high-1
+        global_status.i = j;     // The element being scanned
+        global_status.j = high;  // The pivot element
+        global_status.swapped = false;
+
+        // Draw the current state of comparison
+        if (draw_callback) draw_callback();
+
+        if (arr[j] <= pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+            // Highlight the swap
+            global_status.swapped = true;
+            if (draw_callback) draw_callback();
+        }
+    }
+    
+    // Place the pivot in its correct sorted Position
+    swap(&arr[i + 1], &arr[high]);
+    global_status.i = i + 1;
+    global_status.j = high;
+    global_status.swapped = true;
+    if (draw_callback) draw_callback();
+    return i + 1;
+}
+
+// This is the quckSort function
+SortStatus quickSort(int* arr, int low, int high, void (*draw_callback)()) {
+    if (low < high) {
+        // pi is the partitioning index
+        int pi = partition(arr, low, high, draw_callback);
+
+        // Separately sort elements before and after partition
+        quickSort(arr, low, pi - 1, draw_callback);
+        quickSort(arr, pi + 1, high, draw_callback);
+    }
+
+    // Mark as done when the top-level call finishes
+    if (low == 0 && high >= 499) {
+        global_status.sort_done = true;
+    }
+    return global_status;
+}
+
 // testing for search algorithm
 SortStatus linearSearch(int* arr, int n, int target, void (*draw_callback)()) {
     global_status.type = "Search";
