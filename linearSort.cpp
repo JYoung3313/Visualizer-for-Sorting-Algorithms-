@@ -177,8 +177,13 @@ SortStatus mergeSort(int* arr, int n, int left, int right, void (*draw_callback)
 }
 
 SortStatus bucketSort(int* arr, int n, void (*draw_callback)()) {
+    global_status.type = "Sort";
+    global_status.sort_done = false;
+    
     // 1. Create buckets (using vectors for simplicity inside buckets)
-    const int bucket_count = 10;
+    //const int bucket_count = n;
+    const int bucket_count = n;
+
     std::vector<int> buckets[bucket_count];
 
     // Find max value to normalize distribution
@@ -193,25 +198,56 @@ SortStatus bucketSort(int* arr, int n, void (*draw_callback)()) {
         buckets[bucket_idx].push_back(arr[i]);
 
         global_status.i = i;
+        global_status.swapped = false;
         if (draw_callback) draw_callback();
     }
 
     // 3. Sort individual buckets and put them back in the array
     int index = 0;
+    // 2 & 3. GATHER AND SORT Phase
     for (int i = 0; i < bucket_count; i++) {
-        std::sort(buckets[i].begin(), buckets[i].end()); // sorts each bucket
+        int start_index = index;
 
+        // Step A: Dump the bucket contents back into the main array (unsorted!)
         for (size_t j = 0; j < buckets[i].size(); j++) {
             arr[index] = buckets[i][j];
-
-            global_status.i = index;
-            global_status.j = i; // Using j to represent the bucket number
-            global_status.swapped = true;
             
+            // Highlight the section we are currently dumping
+            global_status.i = index;
+            global_status.swapped = true;
             if (draw_callback) draw_callback();
+            
             index++;
         }
+        int end_index = index;
+
+        // Step B: Animate an Insertion Sort on this specific bucket's chunk of bars
+        for (int k = start_index + 1; k < end_index; k++) {
+            int key = arr[k];
+            int m = k - 1;
+
+            // Shift elements that are greater than the key to the right
+            while (m >= start_index && arr[m] > key) {
+                arr[m + 1] = arr[m];
+                
+                // Animate the shifting process
+                global_status.i = m + 1;
+                global_status.j = m; 
+                global_status.swapped = true;
+                if (draw_callback) draw_callback();
+                
+                m--;
+            }
+            // Place the key in its correct spot
+            arr[m + 1] = key;
+            
+            // Animate the final placement
+            global_status.i = m + 1;
+            global_status.swapped = true;
+            if (draw_callback) draw_callback();
+        }
     }
+
     global_status.sort_done = true;
     return global_status;
 }
@@ -272,6 +308,70 @@ SortStatus quickSort(int* arr, int low, int high, void (*draw_callback)()) {
     }
     return global_status;
 }
+
+static bool isBitSet(unsigned int swap_target, int bit_pos) {
+    return (swap_target >> bit_pos) & 1;
+}
+
+// Radix sorting algorithm
+SortStatus binaryRadixSort(int* arr, int left, int right, int bit_pos, void (*draw_callback)()) {
+    // Base case: No more bits to check or range is invalid
+    const int n = right;
+
+    if (bit_pos < 0 || left >= right) {
+        return global_status;
+    }
+
+    int i = left;
+    int j = right;
+
+    // Sets the global status struct to allow visualizer to work
+    
+
+    // In-place partition (Similar to QuickSort Hoare partition)
+    while (i <= j) {
+        // Sets the global status struct to allow visualizer to work
+        global_status.i = i;
+        global_status.j = j;
+        global_status.swapped = false;
+        if (draw_callback) draw_callback();
+
+        // Find element with bit_pos set to 1
+        while (i <= j && !isBitSet(arr[i], bit_pos)) {
+            i++;
+            global_status.i = i;
+            if (draw_callback) draw_callback();
+        }
+
+        // find element with bit_pos set to 0
+        while (i <= j && isBitSet(arr[j], bit_pos)) {
+            j--;
+            global_status.j = j;
+            if (draw_callback) draw_callback();
+        }
+
+        if (i < j) {
+            swap(&arr[i], &arr[j]);
+            global_status.swapped = true; // Highlight the swap
+            if (draw_callback) draw_callback();
+            i++;
+            j--;
+        }
+    }
+
+    // Recurse on the 0-bit partition (left to j)
+    binaryRadixSort(arr, left, j, bit_pos - 1, draw_callback);
+    // Recurse on the 1-bit partition (i to right)
+    binaryRadixSort(arr, i, right, bit_pos - 1, draw_callback);
+
+    // Only set sort_done at the very top level of the recursion
+    if (bit_pos == 31 || (left == 0 && right == n && bit_pos >= 8)) {
+        global_status.sort_done = true;
+    }
+
+    return global_status;
+}   
+
 
 // testing for search algorithm
 SortStatus linearSearch(int* arr, int n, int target, void (*draw_callback)()) {

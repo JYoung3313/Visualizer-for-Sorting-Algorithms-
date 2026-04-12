@@ -173,6 +173,11 @@ void runSelectedSort(int target) {
         global_status = bucketSort(numbers, COUNT, update_frame);
     } else if (selection == "quickSort") {
         global_status = quickSort(numbers, 0, COUNT - 1, update_frame);
+    } else if (selection == "binaryRadixSort") {
+        global_status.type = "Sort";
+        global_status.sort_done = false;
+        // Starting bit 8 because 2^9 = 512, which covers your COUNT of 500
+        global_status = binaryRadixSort(numbers, 0, COUNT - 1, 8, update_frame);
     } else if (selection == "linearSearch") {
         global_status = linearSearch(numbers, COUNT, target, update_frame);
     } else if (selection == "binarySearch") {
@@ -185,7 +190,7 @@ void runSelectedSort(int target) {
         SetTargetFPS(1);
         global_status = binarySearch(numbers, COUNT, target, update_frame);
         if (global_status.sort_done == true) {
-            SetTargetFPS(60);
+            SetTargetFPS(200);
         }
     }
 }
@@ -210,7 +215,7 @@ int main() {
     
     // Initalizing window
     InitWindow(WIDTH, HEIGHT, "Sorting Visualizer");
-    SetTargetFPS(60);
+    SetTargetFPS(200);
 
     // Calls from linearSort.cpp & linearSort.h
     // global_status = linear_sort(numbers, COUNT, update_frame);
@@ -262,7 +267,7 @@ int main() {
                     DrawText("Select algorithm", WIDTH/2 - 200, HEIGHT/2 - 120, 50, GREEN);
                     //DrawText("Select algorithm", 10, 10, 20, GREEN);
                     // Helper list
-                    DrawText("Options: linear_sort, bubble_sort, heapSort, mergeSort, bucketSort, quickSort, linearSearch, binarySearch", 
+                    DrawText("Options: linear_sort, bubble_sort, heapSort, mergeSort,\nbucketSort, quickSort, binaryRadixSort, linearSearch, binarySearch", 
                         WIDTH/2 - 450, HEIGHT/2 + 20, 20, GRAY);
                 } else {
                     DrawText("Select Target (0 - 499)", WIDTH/2 - 220, HEIGHT/2 - 120, 40, ORANGE);
