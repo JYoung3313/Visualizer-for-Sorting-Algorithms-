@@ -1,4 +1,23 @@
 // Copyright [2026] <Justin J. Young>
+
+// -------------------------------------------------------------------
+// Though I have my name as copy right Please feel free to tinker and
+// use my code all I ask is that you put my name as the original
+// creator of it. I Spend a good amount of time on this and it would
+// nice to see and hear others are using my code to build and create
+// new things of couse this is just an algorithm visualizer but if you
+// would like please send me your projects and explain what it is and
+// I would gladly check it out. I love coding and building things so
+// it would be both an honor and a pleasure to do so.
+// 
+// If you would like to send me your code my email is attached below
+// Please send you github repositorys as it is easier for me to access
+// it that way.
+
+// Email: youngjustin0711@gmail.com
+// Thank you again. Have Fun
+// -------------------------------------------------------------------
+
 #include "linearSort.h"
 #include <raylib.h>
 #include <stdlib.h>
