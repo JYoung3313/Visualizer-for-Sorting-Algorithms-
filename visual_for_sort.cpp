@@ -39,6 +39,10 @@
 // Global for array of number of bars
 int numbers[COUNT];
 
+// Global for the timing of the agorithms
+double startTime;
+double endTime;
+
 // global for is textbox visable
 bool isTextBoxVisible = true;
 
@@ -239,7 +243,9 @@ int main() {
                     }
                     isTextBoxVisible = false;
                     isPickingTarget = false;
+                    startTime = GetTime();
                     runSelectedSort(target);
+                    endTime = GetTime();
                 }                
             }
         }
@@ -279,6 +285,9 @@ int main() {
                     DrawText("SORT COMPLETE", 10, 10, 20, GREEN);
                 }
                 DrawText("Press R to Reset", 10, 40, 20, GRAY);
+                double duration = endTime - startTime;
+                std::string time = "Time it took to run algoithm: \n" + std::to_string(duration) + " seconds";
+                DrawText(time.c_str(), 10, 60, 20, GRAY);
 
                 // resets the program
                 if (IsKeyPressed(KEY_R)) {
